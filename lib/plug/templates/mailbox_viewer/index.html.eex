@@ -91,12 +91,16 @@
       form {
         margin-bottom: 0;
       }
+
+      .list-group-item-text {
+        list-style: none;
+      }
     </style>
   </head>
   <body>
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-3 list">
+        <div class="col-sm-4 list">
           <div class="list-group">
             <%= if Enum.empty?(@emails) do %>
               <div class="list-group-item">
@@ -104,20 +108,23 @@
               </div>
             <% else %>
               <form method="POST" action="<%= to_absolute_url(@conn, "clear") %>">
-                <button class="btn btn-primary btn-block" type="submit">Delete Message Queue</button>
+                <!-- <button class="btn btn-primary btn-block" type="submit">Delete Message Queue</button> -->
               </form>
               <%= for email <- @emails do %>
                 <% id = email.headers["Message-ID"] %>
                 <a href="<%= to_absolute_url(@conn, id) %>" class="list-group-item<%= if @email && @email.headers["Message-ID"] == id, do: " active" %>">
-                  <h6 class="list-group-item-heading"><%= render_recipient(email.from) %></h6>
-                  <p class="list-group-item-text"><%= email.subject %></p>
+                  <ul class="list-group-item-text">
+                    <% [_, company, template, subject] = Regex.run(~r/\[(.*) (.*)\] (.*)/, email.subject) %>
+                    <li><b><%= company %></b></li>
+                    <li><%= template %></li>
+                  </ul>
                 </a>
               <% end %>
             <% end %>
           </div>
         </div>
 
-        <div class="col-sm-offset-3 col-sm-9 content">
+        <div class="col-sm-offset-4 col-sm-8 content">
           <%= if @email do %>
             <div class="header">
               <div class="header-content">
@@ -205,6 +212,11 @@
       const datetimes = Array.from(document.querySelectorAll('[data-datetime]'));
       for (let dt of datetimes) {
         dt.textContent = new Date(dt.dataset.datetime).toLocaleString();
+      }
+
+      var active = document.getElementsByClassName("active");
+      if (active.length > 0) {
+        active[0].scrollIntoView({block: "center"});
       }
     </script>
   </body>
