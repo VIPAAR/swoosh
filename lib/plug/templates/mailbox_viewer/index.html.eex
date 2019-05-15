@@ -138,7 +138,10 @@
                     <%= if @email.subject == "" do %>
                       <i>No subject</i>
                     <% else %>
-                      <%= @email.subject %>
+                      <%= case Regex.run(~r/\[(.*) (.*)\] (.*)/, @email.subject) do
+                        [_, _, _, subject] -> subject
+                        _ -> @email.subject
+                      end %>
                     <% end %>
                   </dd>
 
