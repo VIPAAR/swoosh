@@ -100,16 +100,13 @@
   <body>
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-4 list">
+        <div class="col-sm-3 list">
           <div class="list-group">
             <%= if Enum.empty?(@emails) do %>
               <div class="list-group-item">
                 <h6 class="list-group-item-heading">Empty mailbox...</h6>
               </div>
             <% else %>
-              <form method="POST" action="<%= to_absolute_url(@conn, "clear") %>">
-                <!-- <button class="btn btn-primary btn-block" type="submit">Delete Message Queue</button> -->
-              </form>
               <%= for email <- @emails do %>
                 <% id = email.headers["Message-ID"] %>
                 <a href="<%= to_absolute_url(@conn, id) %>" class="list-group-item<%= if @email && @email.headers["Message-ID"] == id, do: " active" %>">
@@ -124,7 +121,7 @@
           </div>
         </div>
 
-        <div class="col-sm-offset-4 col-sm-8 content">
+        <div class="col-sm-offset-3 col-sm-9 content">
           <%= if @email do %>
             <div class="header">
               <div class="header-content">
