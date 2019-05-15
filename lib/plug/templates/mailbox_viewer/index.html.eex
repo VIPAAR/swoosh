@@ -111,9 +111,10 @@
                 <% id = email.headers["Message-ID"] %>
                 <a href="<%= to_absolute_url(@conn, id) %>" class="list-group-item<%= if @email && @email.headers["Message-ID"] == id, do: " active" %>">
                   <ul class="list-group-item-text">
-                    <% [_, company, template, subject] = Regex.run(~r/\[(.*) (.*)\] (.*)/, email.subject) %>
-                    <li><b><%= company %></b></li>
-                    <li><%= template %></li>
+                    <%= case Regex.run(~r/\[(.*) (.*)\] (.*)/, email.subject) do
+                      [_, company, template, _] -> "<li><b>#{company}</b></li><li>#{template}</li>"
+                      _ -> email.subject
+                    end %>
                   </ul>
                 </a>
               <% end %>
